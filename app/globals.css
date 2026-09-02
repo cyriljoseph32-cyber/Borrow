@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+/* Identité visuelle Borrow (dossier Drive "Visual ID Borrow", 2021) */
+@theme {
+  --color-navy-50: #f2f4f7;
+  --color-navy-100: #e2e7ee;
+  --color-navy-200: #c3ccdb;
+  --color-navy-400: #5b7a99;
+  --color-navy-600: #2b4a68;
+  --color-navy-700: #23394f;
+  --color-navy-900: #1c3144;
+  --color-sand: #e9e9e0;
+  --color-sand-dark: #d9d9cc;
+  --color-brick: #b3061b;
+  --color-brick-dark: #8e0516;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans Thai", sans-serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--color-sand);
+  color: var(--color-navy-900);
+}
+
+/* Masque les flèches des inputs number */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
