@@ -22,9 +22,9 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-12">
-      <section className="rounded-2xl bg-navy-900 px-6 py-12 text-sand sm:px-12 sm:py-16">
+      <section className="rounded-2xl bg-terracotta px-6 py-12 text-sand sm:px-12 sm:py-16">
         <p className="mb-3 text-sm uppercase tracking-widest text-sand/60">Koh Samui</p>
-        <h1 className="max-w-2xl text-3xl font-semibold leading-tight sm:text-5xl">
+        <h1 className="max-w-2xl text-3xl leading-tight sm:text-5xl">
           Don&apos;t buy. Don&apos;t store.
           <br />
           Borrow the gear — and the person who knows it.
@@ -35,10 +35,15 @@ export default async function HomePage() {
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <Link href="/browse">
-            <Button className="bg-sand text-navy-900 hover:bg-sand-dark">Browse listings</Button>
+            <Button className="bg-sand text-terracotta-dark hover:bg-sand-dark">
+              Browse listings
+            </Button>
           </Link>
           <Link href="/new">
-            <Button variant="secondary" className="border-sand/30 bg-transparent text-sand hover:bg-white/10">
+            <Button
+              variant="secondary"
+              className="border-2 border-sand/30 bg-transparent text-sand hover:bg-white/10"
+            >
               List your gear
             </Button>
           </Link>

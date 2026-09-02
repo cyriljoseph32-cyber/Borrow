@@ -16,15 +16,15 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition",
+        "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition",
         "disabled:cursor-not-allowed disabled:opacity-50",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy-900",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta-dark",
         size === "sm" ? "px-3 py-1.5 text-sm" : "px-4 py-2.5 text-sm",
-        variant === "primary" && "bg-navy-900 text-sand hover:bg-navy-700",
-        variant === "secondary" &&
-          "border border-navy-200 bg-white text-navy-900 hover:bg-navy-50",
+        variant === "primary" && "bg-terracotta text-sand hover:bg-terracotta-dark",
+        variant === "secondary" && "bg-honey-light text-terracotta-dark hover:bg-honey",
         variant === "danger" && "bg-brick text-white hover:bg-brick-dark",
-        variant === "ghost" && "text-navy-700 hover:bg-navy-50",
+        variant === "ghost" &&
+          "border-2 border-navy-200 text-terracotta-dark hover:bg-honey-pale",
         className,
       )}
       {...props}
@@ -116,7 +116,10 @@ export function Field({
 export function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("rounded-xl border border-navy-100 bg-white p-5 shadow-sm", className)}
+      className={cn(
+        "rounded-2xl border border-navy-100 bg-white p-5 shadow-[0_4px_14px_rgba(60,30,10,0.08)]",
+        className,
+      )}
       {...props}
     />
   );
@@ -130,12 +133,12 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-        tone === "neutral" && "bg-navy-100 text-navy-700",
-        tone === "success" && "bg-emerald-100 text-emerald-800",
-        tone === "warning" && "bg-amber-100 text-amber-800",
-        tone === "danger" && "bg-red-100 text-brick-dark",
-        tone === "info" && "bg-sky-100 text-sky-800",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold",
+        tone === "neutral" && "bg-honey-light text-terracotta-dark",
+        tone === "success" && "bg-sage-light text-sage-dark",
+        tone === "warning" && "bg-due text-terracotta-dark",
+        tone === "danger" && "bg-due text-brick-dark",
+        tone === "info" && "bg-honey-pale text-terracotta-dark",
         className,
       )}
       {...props}
@@ -201,7 +204,7 @@ export function Avatar({
     />
   ) : (
     <span
-      className="inline-flex items-center justify-center rounded-full bg-navy-900 font-medium text-sand"
+      className="inline-flex items-center justify-center rounded-full bg-terracotta font-semibold text-sand"
       style={{ width: size, height: size, fontSize: size / 2.6 }}
     >
       {initials}

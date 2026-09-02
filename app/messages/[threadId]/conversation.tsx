@@ -62,7 +62,7 @@ export function Conversation({
             <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
               <div
                 className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
-                  mine ? "bg-navy-900 text-sand" : "bg-navy-50 text-navy-900"
+                  mine ? "bg-terracotta text-sand" : "bg-navy-50 text-navy-900"
                 }`}
               >
                 <p className="whitespace-pre-line">{m.body}</p>

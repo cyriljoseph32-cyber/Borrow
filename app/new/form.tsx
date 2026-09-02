@@ -33,7 +33,7 @@ export function NewListingForm({ categories }: { categories: Cat[] }) {
                 key={k}
                 className={`cursor-pointer rounded-lg border p-4 text-sm transition ${
                   kind === k
-                    ? "border-navy-900 bg-navy-50"
+                    ? "border-terracotta bg-honey-pale"
                     : "border-navy-200 hover:border-navy-400"
                 }`}
               >

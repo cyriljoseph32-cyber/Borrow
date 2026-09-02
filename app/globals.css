@@ -1,21 +1,33 @@
 @import "tailwindcss";
 
-/* Identité visuelle Borrow (dossier Drive "Visual ID Borrow", 2021) */
+/* Identité visuelle Borrow — warm/shared palette (Claude Design "Borrow Design System"). */
 @theme {
-  --color-navy-50: #f2f4f7;
-  --color-navy-100: #e2e7ee;
-  --color-navy-200: #c3ccdb;
-  --color-navy-400: #5b7a99;
-  --color-navy-600: #2b4a68;
-  --color-navy-700: #23394f;
-  --color-navy-900: #1c3144;
-  --color-sand: #e9e9e0;
-  --color-sand-dark: #d9d9cc;
-  --color-brick: #b3061b;
-  --color-brick-dark: #8e0516;
+  --color-navy-50: #fff7ea;
+  --color-navy-100: #f5e9d8;
+  --color-navy-200: #f0c9a0;
+  --color-navy-400: #a8896f;
+  --color-navy-600: #c1481f;
+  --color-navy-700: #7a5f4e;
+  --color-navy-900: #3a2b22;
+  --color-sand: #ffffff;
+  --color-sand-dark: #f5ece0;
+  --color-brick: #c0392b;
+  --color-brick-dark: #8e2418;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, "Noto Sans Thai", sans-serif;
+  --color-paper: #fbf1e4;
+  --color-terracotta: #e8552e;
+  --color-terracotta-dark: #c1481f;
+  --color-honey: #f4a531;
+  --color-honey-light: #ffe3c2;
+  --color-honey-pale: #fff0d6;
+  --color-sage: #7a9c6e;
+  --color-sage-dark: #4a7a3a;
+  --color-sage-light: #e4f0dd;
+  --color-due: #ffe0da;
+
+  --font-sans: 'Nunito', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans Thai", sans-serif;
+  --font-display: 'Fredoka', var(--font-sans);
 }
 
 :root {
@@ -23,8 +35,15 @@
 }
 
 body {
-  background-color: var(--color-sand);
+  background-color: var(--color-paper);
   color: var(--color-navy-900);
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display);
 }
 
 /* Masque les flèches des inputs number */

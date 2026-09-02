@@ -195,7 +195,7 @@ export default async function BookingPage({
       )}
 
       {showCode && (
-        <Card className="border-navy-900 bg-navy-900 text-sand">
+        <Card className="border-terracotta bg-terracotta text-sand">
           <p className="text-sm text-sand/70">Handover code — give it to the owner when you meet</p>
           <p className="mt-1 font-mono text-3xl tracking-[0.3em]">{booking.handover_code}</p>
         </Card>
