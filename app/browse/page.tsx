@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { ListingCard, type ListingCardData } from "@/components/listing/listing-card";
 import { Button, Empty, Input, Select } from "@/components/ui";
-import { AREAS } from "@/lib/constants";
+import { AreaSelect } from "@/components/area-select";
 import { getLocale } from "@/lib/i18n";
 
 export const metadata = { title: "Browse" };
@@ -82,14 +82,7 @@ export default async function BrowsePage({
           })}
         </Select>
 
-        <Select name="area" defaultValue={sp.area ?? ""}>
-          <option value="">Anywhere</option>
-          {AREAS.map((a) => (
-            <option key={a} value={a}>
-              {a}
-            </option>
-          ))}
-        </Select>
+        <AreaSelect name="area" defaultValue={sp.area ?? ""} placeholder="Anywhere" />
 
         <div className="flex gap-2">
           <Select name="sort" defaultValue={sp.sort ?? ""}>

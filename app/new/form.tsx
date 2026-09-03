@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { createListing } from "@/app/actions/listings";
 import { Alert, Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
-import { AREAS } from "@/lib/constants";
+import { AreaSelect } from "@/components/area-select";
 import type { Category } from "@/types/database";
 
 type Cat = Pick<Category, "id" | "name_en" | "parent_id" | "accepts" | "requires_review">;
@@ -96,14 +96,7 @@ export function NewListingForm({ categories }: { categories: Cat[] }) {
           </Field>
 
           <Field label="Area">
-            <Select name="area" required>
-              <option value="">Where is it?</option>
-              {AREAS.map((a) => (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              ))}
-            </Select>
+            <AreaSelect required />
           </Field>
 
           {kind === "item" && (
