@@ -141,12 +141,12 @@ types/       database.ts (types métier, à régénérer une fois le projet lié
 
 ## Reste à faire avant le pilote
 
-- [ ] Confirmer le pays du compte Stripe (PromptPay) ou basculer sur Opn Payments
-- [ ] Brancher un vrai OTP SMS (`app/actions/profile.ts` enregistre le numéro sans OTP au pilote)
-- [ ] E-mails transactionnels (Resend) sur les transitions de réservation
+- [ ] Confirmer le pays du compte Stripe (PromptPay) ou basculer sur Opn Payments — **et ajouter les vraies clés `STRIPE_*` sur Vercel : elles ne sont pas encore configurées en prod, le paiement ne fonctionne pas tant que ce n'est pas fait**
+- [x] OTP SMS réel (Twilio Verify) — `lib/sms.ts` + `app/actions/profile.ts` (`sendPhoneOtp` / `verifyPhoneOtp`). Nécessite `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_VERIFY_SERVICE_SID` sur Vercel — sans ces clés, retombe sur l'ancien comportement (numéro enregistré sans vérification)
+- [x] E-mails transactionnels (Resend) — `lib/email.ts`, branché sur toutes les transitions de réservation (demande, acceptation/refus, annulation, remise/retour, avis publié). Nécessite `RESEND_API_KEY` sur Vercel — sans clé, no-op silencieux
 - [ ] Faire relire les CGU et la page Confidentialité par un juriste
-- [ ] i18n thaï (les chaînes sont en anglais en dur pour l'instant)
-- [ ] Seed de 15 annonces réelles et recrutement des 20 premiers fournisseurs
+- [x] i18n thaï de base — sélecteur EN/ไทย dans le header, cookie de langue, traduit : accueil, header, footer, catégories (déjà bilingues en base). Le reste des pages (browse, fiche annonce, réservation) reste en anglais — à étendre au fil de l'eau via `lib/i18n.ts`
+- [x] Contenu de 8 annonces réelles prêt à publier (`supabase/seed-listings-content.md`) + message de recrutement prêteurs — publication finale à faire depuis l'app (photos obligatoires, pas possible en SQL direct)
 
 ---
 

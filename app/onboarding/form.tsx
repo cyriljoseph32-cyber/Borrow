@@ -1,8 +1,9 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { saveProfile, savePhone } from "@/app/actions/profile";
+import { saveProfile } from "@/app/actions/profile";
+import { PhoneVerify } from "@/components/phone-verify";
 import { Alert, Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
 import { AREAS, LANGUAGES } from "@/lib/constants";
 import type { Profile } from "@/types/database";
@@ -10,10 +11,9 @@ import type { Profile } from "@/types/database";
 export function OnboardingForm({ profile, next }: { profile: Profile; next: string }) {
   const router = useRouter();
   const [state, action, pending] = useActionState(saveProfile, null);
-  const [phoneState, phoneAction, phonePending] = useActionState(savePhone, null);
+  const [phoneDone, setPhoneDone] = useState(profile.phone_verified);
 
   const profileDone = state && "ok" in state && state.ok;
-  const phoneDone = (phoneState && "ok" in phoneState && phoneState.ok) || profile.phone_verified;
 
   useEffect(() => {
     if (profileDone && phoneDone) router.push(next);
@@ -76,19 +76,11 @@ export function OnboardingForm({ profile, next }: { profile: Profile; next: stri
           each other here.
         </p>
 
-        {phoneState && "error" in phoneState && phoneState.error && (
-          <Alert tone="error">{phoneState.error}</Alert>
-        )}
-        {phoneDone && <Alert tone="success">Phone number recorded.</Alert>}
-
-        <form action={phoneAction}>
-          <Field label="Phone">
-            <Input name="phone" defaultValue={profile.phone ?? ""} placeholder="+66 …" required />
-          </Field>
-          <Button type="submit" disabled={phonePending} variant="secondary">
-            {phonePending ? "Saving…" : "Confirm number"}
-          </Button>
-        </form>
+        <PhoneVerify
+          defaultPhone={profile.phone}
+          verified={profile.phone_verified}
+          onVerified={() => setPhoneDone(true)}
+        />
       </Card>
     </div>
   );
