@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { currentProfile } from "@/lib/queries";
+import { getLocale, t } from "@/lib/i18n";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,10 +16,10 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const profile = await currentProfile();
+  const [profile, locale] = await Promise.all([currentProfile(), getLocale()]);
 
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -38,19 +39,21 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </main>
         <footer className="hidden border-t border-navy-100 bg-white/40 sm:block">
           <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-navy-400 sm:flex-row sm:items-center">
-            <p>© {new Date().getFullYear()} Borrow — Koh Samui pilot.</p>
+            <p>
+              © {new Date().getFullYear()} {t(locale, "footer.copyright")}
+            </p>
             <nav className="flex gap-4 sm:ml-auto">
               <Link href="/how-it-works" className="hover:text-navy-700">
-                How it works
+                {t(locale, "footer.howItWorks")}
               </Link>
               <Link href="/safety" className="hover:text-navy-700">
-                Safety
+                {t(locale, "footer.safety")}
               </Link>
               <Link href="/terms" className="hover:text-navy-700">
-                Terms
+                {t(locale, "footer.terms")}
               </Link>
               <Link href="/privacy" className="hover:text-navy-700">
-                Privacy
+                {t(locale, "footer.privacy")}
               </Link>
             </nav>
           </div>

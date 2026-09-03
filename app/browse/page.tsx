@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ListingCard, type ListingCardData } from "@/components/listing/listing-card";
 import { Button, Empty, Input, Select } from "@/components/ui";
 import { AREAS } from "@/lib/constants";
+import { getLocale } from "@/lib/i18n";
 
 export const metadata = { title: "Browse" };
 
@@ -22,10 +23,11 @@ export default async function BrowsePage({
 }) {
   const sp = await searchParams;
   const supabase = await createClient();
+  const locale = await getLocale();
 
   const { data: categories } = await supabase
     .from("categories")
-    .select("id,slug,name_en,parent_id")
+    .select("id,slug,name_en,name_th,parent_id")
     .order("sort_order");
 
   let query = supabase
@@ -70,11 +72,14 @@ export default async function BrowsePage({
 
         <Select name="category" defaultValue={sp.category ?? ""}>
           <option value="">All categories</option>
-          {categories?.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.parent_id ? `— ${c.name_en}` : c.name_en}
-            </option>
-          ))}
+          {categories?.map((c) => {
+            const name = locale === "th" && c.name_th ? c.name_th : c.name_en;
+            return (
+              <option key={c.id} value={c.id}>
+                {c.parent_id ? `— ${name}` : name}
+              </option>
+            );
+          })}
         </Select>
 
         <Select name="area" defaultValue={sp.area ?? ""}>

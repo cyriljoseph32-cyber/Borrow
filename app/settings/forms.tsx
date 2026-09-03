@@ -1,8 +1,9 @@
 "use client";
 
 import { useActionState } from "react";
-import { saveProfile, savePhone } from "@/app/actions/profile";
+import { saveProfile } from "@/app/actions/profile";
 import { addCredential } from "@/app/actions/credentials";
+import { PhoneVerify } from "@/components/phone-verify";
 import { Alert, Button, Card, Field, Input, Select, Textarea, Badge } from "@/components/ui";
 import { AREAS, LANGUAGES, CREDENTIAL_KINDS } from "@/lib/constants";
 import { shortDate } from "@/lib/format";
@@ -16,7 +17,6 @@ export function SettingsForms({
   credentials: Credential[];
 }) {
   const [state, action, pending] = useActionState(saveProfile, null);
-  const [phoneState, phoneAction, phonePending] = useActionState(savePhone, null);
   const [credState, credAction, credPending] = useActionState(addCredential, null);
 
   return (
@@ -67,23 +67,9 @@ export function SettingsForms({
       <Card>
         <h2 className="mb-1 font-medium text-navy-900">Phone</h2>
         <p className="mb-4 text-sm text-navy-400">
-          {profile.phone_verified ? "Verified." : "Required before booking or listing."}
+          {profile.phone_verified ? "" : "Required before booking or listing."}
         </p>
-        {phoneState && "error" in phoneState && phoneState.error && (
-          <Alert tone="error">{phoneState.error}</Alert>
-        )}
-        {phoneState && "ok" in phoneState && phoneState.ok && <Alert tone="success">Saved.</Alert>}
-
-        <form action={phoneAction} className="flex items-end gap-2">
-          <div className="flex-1">
-            <Field label="Number">
-              <Input name="phone" defaultValue={profile.phone ?? ""} placeholder="+66 …" required />
-            </Field>
-          </div>
-          <Button type="submit" variant="secondary" disabled={phonePending} className="mb-4">
-            Save
-          </Button>
-        </form>
+        <PhoneVerify defaultPhone={profile.phone} verified={profile.phone_verified} />
       </Card>
 
       <Card>

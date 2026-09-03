@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { profileSchema } from "@/lib/validation/booking";
 import { humanError } from "@/lib/constants";
+import { sendOtp, checkOtp, twilioConfigured, SmsNotConfiguredError } from "@/lib/sms";
 
 export async function saveProfile(_prev: unknown, formData: FormData) {
   const supabase = await createClient();
@@ -31,32 +32,84 @@ export async function saveProfile(_prev: unknown, formData: FormData) {
 }
 
 /**
- * Vérification du téléphone.
+ * Vérification du téléphone — vrai OTP SMS via Twilio Verify (lib/sms.ts).
  *
- * Au pilote, l'OTP SMS n'est pas branché (coût et délai de mise en place d'un
- * expéditeur en Thaïlande). On enregistre le numéro et on marque le profil
- * comme vérifié après confirmation manuelle. Pour activer le vrai OTP :
- * supabase.auth.updateUser({ phone }) puis verifyOtp({ type: "phone_change" }).
+ * Étape 1 : sendPhoneOtp enregistre le numéro (non vérifié) et envoie le code.
+ * Étape 2 : verifyPhoneOtp vérifie le code et marque le profil comme vérifié.
+ *
+ * Si TWILIO_* n'est pas configuré (dev local, ou avant que les clés soient
+ * ajoutées), on retombe sur l'ancien comportement : le numéro est enregistré
+ * et marqué vérifié directement, pour ne pas bloquer le développement.
  */
-export async function savePhone(_prev: unknown, formData: FormData) {
+function normalizePhone(raw: string) {
+  const phone = raw.trim();
+  if (!/^\+?[0-9 ]{8,20}$/.test(phone)) return null;
+  return phone.replace(/\s+/g, "");
+}
+
+export async function sendPhoneOtp(_prev: unknown, formData: FormData) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "You need to be signed in." };
 
-  const phone = String(formData.get("phone") || "").trim();
-  if (!/^\+?[0-9 ]{8,20}$/.test(phone)) {
-    return { error: "Enter a valid phone number, e.g. +66 63 375 3316." };
+  const phone = normalizePhone(String(formData.get("phone") || ""));
+  if (!phone) return { error: "Enter a valid phone number, e.g. +66 63 375 3316." };
+
+  if (!twilioConfigured()) {
+    // Pas d'OTP configuré : on garde l'ancien comportement (pilote sans SMS).
+    const { error } = await supabase
+      .from("profiles")
+      .update({ phone, phone_verified: true })
+      .eq("id", user.id);
+    if (error) return { error: humanError(error.message) };
+    revalidatePath("/settings");
+    revalidatePath("/onboarding");
+    return { ok: true as const, verified: true as const };
   }
+
+  const { error: dbError } = await supabase
+    .from("profiles")
+    .update({ phone, phone_verified: false })
+    .eq("id", user.id);
+  if (dbError) return { error: humanError(dbError.message) };
+
+  try {
+    const result = await sendOtp(phone);
+    if (!result.ok) return { error: result.error };
+  } catch (e) {
+    if (e instanceof SmsNotConfiguredError) return { error: e.message };
+    return { error: "Could not send the SMS. Try again in a minute." };
+  }
+
+  revalidatePath("/settings");
+  revalidatePath("/onboarding");
+  return { ok: true as const, verified: false as const, phone };
+}
+
+export async function verifyPhoneOtp(_prev: unknown, formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "You need to be signed in." };
+
+  const phone = normalizePhone(String(formData.get("phone") || ""));
+  const code = String(formData.get("code") || "").trim();
+  if (!phone) return { error: "Missing phone number." };
+  if (!/^[0-9]{4,8}$/.test(code)) return { error: "Enter the code you received by SMS." };
+
+  const result = await checkOtp(phone, code);
+  if (!result.ok) return { error: result.error };
 
   const { error } = await supabase
     .from("profiles")
     .update({ phone, phone_verified: true })
     .eq("id", user.id);
-
   if (error) return { error: humanError(error.message) };
 
   revalidatePath("/settings");
+  revalidatePath("/onboarding");
   return { ok: true as const };
 }
