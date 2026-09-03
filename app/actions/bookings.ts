@@ -9,6 +9,15 @@ import {
   disputeSchema,
 } from "@/lib/validation/booking";
 import { humanError } from "@/lib/constants";
+import {
+  loadBookingEmailCtx,
+  emailBookingRequested,
+  emailBookingAccepted,
+  emailBookingDeclined,
+  emailBookingCancelled,
+  emailHandoverConfirmed,
+  emailReviewPublished,
+} from "@/lib/email";
 
 export async function requestBooking(_prev: unknown, formData: FormData) {
   const supabase = await createClient();
@@ -31,6 +40,10 @@ export async function requestBooking(_prev: unknown, formData: FormData) {
   });
 
   if (error) return { error: humanError(error.message) };
+
+  const ctx = await loadBookingEmailCtx(supabase, data.id);
+  if (ctx) await emailBookingRequested(ctx);
+
   redirect(`/booking/${data.id}`);
 }
 
@@ -48,6 +61,9 @@ export async function respondToBooking(_prev: unknown, formData: FormData) {
 
   if (error) return { error: humanError(error.message) };
 
+  const ctx = await loadBookingEmailCtx(supabase, bookingId);
+  if (ctx) await (accept ? emailBookingAccepted(ctx) : emailBookingDeclined(ctx));
+
   revalidatePath(`/booking/${bookingId}`);
   revalidatePath("/my/bookings");
   return { ok: true as const };
@@ -58,11 +74,21 @@ export async function cancelBooking(_prev: unknown, formData: FormData) {
   const bookingId = String(formData.get("booking_id"));
   const reason = String(formData.get("reason") || "") || null;
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   const { error } = await supabase.rpc("cancel_booking", {
     p_booking_id: bookingId,
     p_reason: reason,
   });
   if (error) return { error: humanError(error.message) };
+
+  const ctx = await loadBookingEmailCtx(supabase, bookingId);
+  if (ctx) {
+    const cancelledBy = user?.id === ctx.booking.owner_id ? "owner" : "renter";
+    await emailBookingCancelled(ctx, cancelledBy);
+  }
 
   revalidatePath(`/booking/${bookingId}`);
   revalidatePath("/my/bookings");
@@ -80,6 +106,9 @@ export async function confirmPickup(_prev: unknown, formData: FormData) {
   });
   if (error) return { error: humanError(error.message) };
 
+  const ctx = await loadBookingEmailCtx(supabase, bookingId);
+  if (ctx) await emailHandoverConfirmed(ctx, "pickup");
+
   revalidatePath(`/booking/${bookingId}`);
   return { ok: true as const };
 }
@@ -90,6 +119,9 @@ export async function confirmReturn(_prev: unknown, formData: FormData) {
 
   const { error } = await supabase.rpc("confirm_return", { p_booking_id: bookingId });
   if (error) return { error: humanError(error.message) };
+
+  const ctx = await loadBookingEmailCtx(supabase, bookingId);
+  if (ctx) await emailHandoverConfirmed(ctx, "return");
 
   revalidatePath(`/booking/${bookingId}`);
   return { ok: true as const };
@@ -137,12 +169,17 @@ export async function submitReview(_prev: unknown, formData: FormData) {
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the form." };
 
-  const { error } = await supabase.rpc("submit_review", {
+  const { data, error } = await supabase.rpc("submit_review", {
     p_booking_id: parsed.data.booking_id,
     p_rating: parsed.data.rating,
     p_comment: parsed.data.comment ?? null,
   });
   if (error) return { error: humanError(error.message) };
+
+  if (data?.is_published) {
+    const ctx = await loadBookingEmailCtx(supabase, parsed.data.booking_id);
+    if (ctx) await emailReviewPublished(ctx);
+  }
 
   revalidatePath(`/booking/${parsed.data.booking_id}`);
   return { ok: true as const };
