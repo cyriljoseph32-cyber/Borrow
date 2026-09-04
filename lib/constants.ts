@@ -1,14 +1,30 @@
-export const AREAS = [
-  "Lamai",
-  "Chaweng",
-  "Bophut / Fisherman's Village",
-  "Maenam",
-  "Bangrak / Big Buddha",
-  "Plai Laem",
-  "Nathon",
-  "Taling Ngam",
-  "Other",
+/** Islands covered by the pilot, each with its own list of areas/neighbourhoods. */
+export const ISLANDS = [
+  {
+    name: "Koh Samui",
+    areas: [
+      "Lamai",
+      "Chaweng",
+      "Bophut / Fisherman's Village",
+      "Maenam",
+      "Bangrak / Big Buddha",
+      "Plai Laem",
+      "Nathon",
+      "Taling Ngam",
+    ],
+  },
+  {
+    name: "Koh Phangan",
+    areas: ["Thong Sala", "Haad Rin", "Srithanu / Yoga area", "Chaloklum", "Baan Tai / Baan Khai"],
+  },
+  {
+    name: "Koh Tao",
+    areas: ["Mae Haad / Sairee", "Chalok Baan Kao", "Freedom Beach area"],
+  },
 ] as const;
+
+/** Flat list of every area across every island, for storage and validation. */
+export const AREAS = [...ISLANDS.flatMap((island) => island.areas), "Other"] as const;
 
 export const LANGUAGES = ["English", "ไทย", "Français", "Deutsch", "Svenska", "Русский"] as const;
 

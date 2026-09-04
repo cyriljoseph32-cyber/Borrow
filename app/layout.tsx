@@ -8,11 +8,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Borrow — rent the gear, book the person",
+    default: "Borrow — rent anything, book the person",
     template: "%s · Borrow",
   },
   description:
-    "Rent diving, watersports and adventure gear from people around you on Koh Samui — and book the instructor who knows how to use it.",
+    "Rent bikes, tools, camping gear, dive equipment and more from people around you on Koh Samui, Koh Phangan and Koh Tao — or book the instructor who knows how to use it.",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

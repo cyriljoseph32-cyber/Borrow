@@ -5,7 +5,8 @@ import { saveProfile } from "@/app/actions/profile";
 import { addCredential } from "@/app/actions/credentials";
 import { PhoneVerify } from "@/components/phone-verify";
 import { Alert, Button, Card, Field, Input, Select, Textarea, Badge } from "@/components/ui";
-import { AREAS, LANGUAGES, CREDENTIAL_KINDS } from "@/lib/constants";
+import { LANGUAGES, CREDENTIAL_KINDS } from "@/lib/constants";
+import { AreaSelect } from "@/components/area-select";
 import { shortDate } from "@/lib/format";
 import type { Credential, Profile } from "@/types/database";
 
@@ -31,14 +32,7 @@ export function SettingsForms({
             <Input name="full_name" defaultValue={profile.full_name} required />
           </Field>
           <Field label="Area">
-            <Select name="area" defaultValue={profile.area ?? ""}>
-              <option value="">—</option>
-              {AREAS.map((a) => (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              ))}
-            </Select>
+            <AreaSelect defaultValue={profile.area ?? ""} placeholder="—" />
           </Field>
           <Field label="Languages">
             <div className="flex flex-wrap gap-3">

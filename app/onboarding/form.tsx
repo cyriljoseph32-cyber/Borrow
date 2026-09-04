@@ -4,8 +4,9 @@ import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { saveProfile } from "@/app/actions/profile";
 import { PhoneVerify } from "@/components/phone-verify";
-import { Alert, Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
-import { AREAS, LANGUAGES } from "@/lib/constants";
+import { Alert, Button, Card, Field, Input, Textarea } from "@/components/ui";
+import { LANGUAGES } from "@/lib/constants";
+import { AreaSelect } from "@/components/area-select";
 import type { Profile } from "@/types/database";
 
 export function OnboardingForm({ profile, next }: { profile: Profile; next: string }) {
@@ -35,15 +36,8 @@ export function OnboardingForm({ profile, next }: { profile: Profile; next: stri
           <Field label="Full name">
             <Input name="full_name" defaultValue={profile.full_name} required />
           </Field>
-          <Field label="Where on the island?">
-            <Select name="area" defaultValue={profile.area ?? ""} required>
-              <option value="">Pick an area…</option>
-              {AREAS.map((a) => (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              ))}
-            </Select>
+          <Field label="Where are you based?">
+            <AreaSelect defaultValue={profile.area ?? ""} required placeholder="Pick an area…" />
           </Field>
           <Field label="Languages you speak" hint="Helps people know how to reach you.">
             <div className="flex flex-wrap gap-3">

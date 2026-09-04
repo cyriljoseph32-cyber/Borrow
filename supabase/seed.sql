@@ -9,7 +9,8 @@ insert into public.categories (slug, name_en, name_th, accepts, requires_review,
   ('rugby',         'Rugby & team sports',      'รักบี้',            '{item,service}', true,  40),
   ('fitness',       'Fitness & movement',       'ฟิตเนส',            '{item,service}', true,  50),
   ('mobility',      'Mobility',                 'การเดินทาง',        '{item}',         false, 60),
-  ('family',        'Family & travel gear',     'อุปกรณ์ครอบครัว',    '{item}',         false, 70)
+  ('family',        'Family & travel gear',     'อุปกรณ์ครอบครัว',    '{item}',         false, 70),
+  ('everyday',      'Everyday & tools',         'ของใช้ในบ้าน',       '{item}',         false, 45)
 on conflict (slug) do nothing;
 
 -- Sous-catégories
@@ -31,7 +32,9 @@ from (values
   ('fitness',     'fitness-sessions',   'Sessions & classes',    '{service}',      true,  52),
   ('mobility',    'mobility-bikes',     'Bikes & scooters',      '{item}',         false, 61),
   ('family',      'family-baby',        'Baby & toddler gear',   '{item}',         false, 71),
-  ('family',      'family-camping',     'Camping & hiking',      '{item}',         false, 72)
+  ('family',      'family-camping',     'Camping & hiking',      '{item}',         false, 72),
+  ('everyday',    'everyday-tools',     'Tools & DIY',           '{item}',         false, 46),
+  ('everyday',    'everyday-electronics','Electronics & AV',     '{item}',         false, 47)
 ) as v(parent_slug, slug, name_en, accepts, requires_review, sort_order)
 join public.categories c on c.slug = v.parent_slug
 on conflict (slug) do nothing;

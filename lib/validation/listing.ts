@@ -8,7 +8,7 @@ export const listingDraftSchema = z.object({
   category_id: z.string().uuid("Pick a category"),
   title: z.string().trim().min(3, "At least 3 characters").max(120),
   description: z.string().trim().max(4000).default(""),
-  area: z.enum(AREAS),
+  area: z.enum(AREAS as unknown as [string, ...string[]]),
   price_baht: baht,
   price_week_baht: baht.optional().nullable(),
   price_month_baht: baht.optional().nullable(),
